@@ -2,12 +2,12 @@
 </script>
 
 <template>
-    <header>
-        <nav>
-            <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/auth">Auth</RouterLink>
-        </nav>
-    </header>
+  <header>
+    <nav>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/auth">Auth</RouterLink>
+    </nav>
+  </header>
 </template>
 
 <style scoped></style>
