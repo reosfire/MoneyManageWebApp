@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import {useRouter} from "vue-router";
+import LoadingCircle from "@/components/LoadingCircle.vue";
 
 const router = useRouter()
+
+const loading = ref(false)
 
 enum State {
   register = "Register",
@@ -49,19 +52,19 @@ const send = () => {
   }
 }
 
-const performSend = (link: RequestInfo, requestOptions: any) => {
-  return fetch(link, requestOptions)
-      .then(response => {
-        if (response.ok) {
-          return true
-        }
-        else {
-          response.text().then(text => {
-            console.log(text)
-          })
-          return false
-        }
-      })
+const performSend = async (link: RequestInfo, requestOptions: any) => {
+  loading.value = true
+  let response = await fetch(link, requestOptions);
+  loading.value = false
+
+  if (response.ok) {
+    return true
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return false
+  }
 }
 
 const performLogin = (requestOptions: any) => {
@@ -80,6 +83,7 @@ const toggleState = () => {
 </script>
 
 <template>
+  <LoadingCircle v-if="loading"/>
   <div class="screen">
     <div class="registration-block">
       <div class="state-label-container">

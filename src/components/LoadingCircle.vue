@@ -3,40 +3,42 @@
 </script>
 
 <template>
-  <div class="lds-ring">
-    <div/>
-    <div/>
-    <div/>
-    <div/>
+  <div class="screen">
+    <div class="lds-ring">
+      <div/>
+      <div/>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+.screen {
+  background-color: #00000077;
+  backdrop-filter: blur(2px);
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-items: center;
 }
+
+
+.lds-ring {
+  width: 64px;
+  height: 64px;
+}
+
 .lds-ring div {
   box-sizing: border-box;
   display: block;
   position: absolute;
   width: 64px;
   height: 64px;
-  margin: 8px;
-  border: 8px solid #fff;
+  border: 5px solid;
   border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #fff transparent transparent transparent;
+  animation: lds-ring 1s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  border-color: var(--text-primary) var(--text-primary) transparent transparent;
 }
 .lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
   animation-delay: -0.15s;
 }
 @keyframes lds-ring {
