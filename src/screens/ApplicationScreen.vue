@@ -27,16 +27,47 @@ const logout = () => {
 </script>
 
 <template>
-  <header class="header">
+  <header>
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/auth">Auth</RouterLink>
+      <RouterLink class="router-link" to="/first">first</RouterLink>
+      <RouterLink class="router-link" to="/second">second</RouterLink>
+      <RouterLink class="router-link" to="/third">third</RouterLink>
     </nav>
   </header>
-  <div>{{secretText}}</div>
-  <button @click="logout">Logout</button>
+  <div class="content">
+    <div>{{secretText}}</div>
+    <button @click="logout">Logout</button>
+    <router-view/>
+  </div>
 </template>
 
 <style scoped>
+header {
+  width: 100%;
+  background-color: var(--background-secondary);
+  border-bottom: solid 2px var(--accent-high);
+  padding: 10px;
+}
+nav {
+  display: flex;
+  justify-content: space-evenly;
+}
+.router-link {
+  padding-left: 15px;
+  padding-right: 15px;
+  color: white;
+  font-size: 2em;
+  background-color: var(--background-clickable);
+  border: solid 1px var(--accent-low);
+  border-radius: 20px;
+  text-decoration: none;
+}
+.router-link-active {
+  color: var(--accent-high);
+  border: solid 1px var(--accent-high);
+}
 
+.content {
+  padding-top: 10px;
+}
 </style>

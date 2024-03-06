@@ -88,13 +88,15 @@ const toggleState = () => {
 
       <div class="input-block">
         <span class="input-label">Login: </span>
-        <input class="input-field" :class="{ 'incorrect-input-field' : loginIncorrect }" v-model="login"/>
+        <input class="input-field"
+               :class="{ 'incorrect-input-field' : loginIncorrect }"
+               v-model="login"/>
       </div>
 
       <div class="input-block">
         <span class="input-label">Password: </span>
         <input type="password"
-               class="input-field password-field"
+               class="input-field"
                :class="{ 'incorrect-input-field' : passwordIncorrect }"
                v-model="password"/>
       </div>
@@ -117,17 +119,19 @@ const toggleState = () => {
 }
 
 .registration-block {
-  background-color: var(--color-background-mute);
+  background-color: var(--background-secondary);
   border-radius: 20px;
+  border: solid 1px var(--accent-low);
   padding: 20px;
   width: 50%;
   height: fit-content;
 }
 
+
 .state-label-container {
   display: flex;
   justify-content: center;
-  border-bottom-color: var(--block-text-color);
+  border-bottom-color: var(--accent-low);
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
@@ -136,7 +140,9 @@ const toggleState = () => {
   font-size: 1.5em;
   user-select: none;
   cursor: pointer;
+  color: var(--text-primary);
 }
+
 
 .input-block {
   margin-bottom: 10px;
@@ -144,49 +150,59 @@ const toggleState = () => {
 
 .input-label {
   user-select: none;
+  color: var(--text-secondary);
 }
 
 .input-field {
+  outline: none;
+  color: var(--text-primary);
   width: 100%;
+  background-color: var(--background-secondary);
   border-radius: 5px;
-  border-color: var(--color-border);
+  border: solid 2px var(--accent-high);
   font-size: 1.3em;
 }
 
-.password-field {
-  padding-right: 30px;
-}
-
 .incorrect-input-field {
-  outline-color: orangered;
+  outline: none;
   border-color: indianred;
 }
 
-.incorrect-input-field:focus {
-  outline-color: indianred;
-}
 
 .send-button {
+  background-color: var(--background-clickable);
+  color: var(--text-primary);
   width: 100%;
   border-radius: 10px;
   height: 30px;
   cursor: pointer;
-  border-style: none;
+  border: solid 1px var(--accent-low);
   transition-duration: 200ms;
+  outline: none;
 }
 
 .send-button:hover {
-  background-color: dimgrey;
+  border: solid 1px var(--accent-middle);
+  background-color: var(--background-clickable-highlighted);
+}
+
+.send-button:active {
+  border: solid 1px var(--accent-high);
+  color: var(--accent-high);
 }
 
 .inactive-send-button {
-  background-color: dimgrey;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  cursor: initial;
 }
 
-.inactive-send-button:active {
-  outline: none;
-  border-style: none;
+.inactive-send-button:hover {
+  border: solid 1px var(--accent-low);
+  color: var(--text-secondary);
+  background-color: var(--background-clickable);
 }
+
 
 .state-toggle-container {
   display: flex;
@@ -200,7 +216,7 @@ const toggleState = () => {
 }
 
 .state-toggle:hover {
-  color: whitesmoke;
+  color: var(--accent-high);
 }
 
 @media (min-width: 1024px) {

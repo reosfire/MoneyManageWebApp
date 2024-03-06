@@ -1,5 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import ApplicationScreen from '../screens/ApplicationScreen.vue'
+import First from "@/screens/application-subscreens/First.vue";
+import Second from "@/screens/application-subscreens/Second.vue";
+import Third from "@/screens/application-subscreens/Third.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +12,21 @@ const router = createRouter({
             name: 'home',
             component: ApplicationScreen,
             meta: { onlyForAuthorized: true },
+
+            children: [
+                {
+                    path: "/first",
+                    component: First
+                },
+                {
+                    path: "/second",
+                    component: Second
+                },
+                {
+                    path: "/third",
+                    component: Third
+                },
+            ]
         },
         {
             path: '/auth',
