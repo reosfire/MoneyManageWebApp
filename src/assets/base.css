@@ -46,6 +46,7 @@ body {
     min-height: 100vh;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
     scroll-margin-top: 50px;
     color: var(--text-primary);
     background: var(--background-primary);

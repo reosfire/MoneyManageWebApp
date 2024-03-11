@@ -113,7 +113,6 @@ nav {
   top: 60px;
   right: 10px;
 }
-
 @media (min-width: 1024px) {
   .menu {
     top: 68px;
@@ -123,6 +122,11 @@ nav {
 .content-holder {
   max-width: 100%;
   padding: 10px 10% 0 10%;
+}
+@media (min-width: 1024px) {
+  .content-holder {
+    padding: 10px 20% 0 20%;
+  }
 }
 
 .content {

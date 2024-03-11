@@ -3,3 +3,25 @@
 #app {
     max-width: 100%;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    margin-left: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--background-clickable);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--background-clickable-highlighted);
+}
+::-webkit-scrollbar-thumb:active {
+    background: var(--accent-high);
+}

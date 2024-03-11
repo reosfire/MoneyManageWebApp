@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="to-buy-screen">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" id="profile">
       <g fill-rule="evenodd">
         <g transform="translate(-420 -2159)">
@@ -14,7 +14,7 @@
 </template>
 
 <style scoped>
-.container {
+.to-buy-screen {
   width: 36px;
   height: 36px;
   border: solid 1px var(--accent-low);
@@ -26,12 +26,12 @@
   transition: background-color 100ms, color 100ms;
 }
 
-.container:hover {
+.to-buy-screen:hover {
   background-color: var(--background-clickable-highlighted);
   border: solid 1px var(--accent-middle);
 }
 
-.container:active {
+.to-buy-screen:active {
   fill: var(--accent-high);
   border: solid 1px var(--accent-high);
 }
@@ -42,7 +42,7 @@ svg {
 }
 
 @media (min-width: 1024px) {
-  .container {
+  .to-buy-screen {
     width: 46px;
     height: 46px;
     padding: 8px;
