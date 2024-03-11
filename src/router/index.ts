@@ -1,8 +1,11 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import ApplicationScreen from '../screens/ApplicationScreen.vue'
-import First from "@/screens/application-subscreens/First.vue";
-import Second from "@/screens/application-subscreens/Second.vue";
-import Third from "@/screens/application-subscreens/Third.vue";
+import First from "@/screens/application-subscreens/ToBuyScreen.vue";
+import Second from "@/screens/application-subscreens/DivisorScreen.vue";
+import Third from "@/screens/application-subscreens/RoomsManagementScreen.vue";
+import ToBuyScreen from "@/screens/application-subscreens/ToBuyScreen.vue";
+import DivisorScreen from "@/screens/application-subscreens/DivisorScreen.vue";
+import RoomsManagementScreen from "@/screens/application-subscreens/RoomsManagementScreen.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,16 +18,16 @@ const router = createRouter({
 
             children: [
                 {
-                    path: "/first",
-                    component: First
+                    path: "/to-buy",
+                    component: ToBuyScreen
                 },
                 {
-                    path: "/second",
-                    component: Second
+                    path: "/divisor",
+                    component: DivisorScreen
                 },
                 {
-                    path: "/third",
-                    component: Third
+                    path: "/rooms",
+                    component: RoomsManagementScreen
                 },
             ]
         },

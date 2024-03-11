@@ -30,7 +30,7 @@
         --accent-middle: #888888; /* hover border (clickables) */
         --accent-high: #A97BFF; /* active text field */
 
-        --icon-primary: #810CA8;
+        --icon-primary: #DBD8E3;
     }
 }
 
@@ -44,6 +44,9 @@
 
 body {
     min-height: 100vh;
+    max-width: 100%;
+    overflow-x: hidden;
+    scroll-margin-top: 50px;
     color: var(--text-primary);
     background: var(--background-primary);
     transition: color 0.5s,

@@ -32,7 +32,7 @@ const sendButtonInactive = computed(() => {
   return loginIncorrect.value || passwordIncorrect.value
 })
 
-const send = () => {
+function send() {
   if (sendButtonInactive.value) return
 
   const requestOptions = {
@@ -52,7 +52,7 @@ const send = () => {
   }
 }
 
-const performSend = async (link: RequestInfo, requestOptions: any) => {
+async function performSend(link: RequestInfo, requestOptions: any) {
   loading.value = true
   let response = await fetch(link, requestOptions);
   loading.value = false
@@ -67,14 +67,14 @@ const performSend = async (link: RequestInfo, requestOptions: any) => {
   }
 }
 
-const performLogin = (requestOptions: any) => {
+function performLogin(requestOptions: any) {
   performSend("/api/login", requestOptions)
       .then(success => {
         if (success) router.push("/")
       })
 }
 
-const toggleState = () => {
+function toggleState() {
   if (state.value == State.login) state.value = State.register
   else if (state.value == State.register) state.value = State.login
   else throw Error("unknown state")
