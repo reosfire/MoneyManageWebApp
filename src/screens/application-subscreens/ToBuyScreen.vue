@@ -16,9 +16,10 @@ for (let i = 0; i < 20; i++) {
 
   data.push({
     name: "Some entry " + i,
+    price: Math.floor(Math.random() * 100),
     checked: i % 2 == 0,
     emoji: "🍌",
-    tags: tags
+    tags: tags,
   })
 }
 
