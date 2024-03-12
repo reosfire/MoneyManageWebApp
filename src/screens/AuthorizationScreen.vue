@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, type Ref, ref} from 'vue'
 import {useRouter} from "vue-router";
 import LoadingCircle from "@/components/LoadingCircle.vue";
+import ErrorPopup from "@/components/ErrorPopup.vue";
 
 const router = useRouter()
 
 const loading = ref(false)
+
+const serverAuthError: Ref<null | string> = ref(null)
 
 enum State {
   register = "Register",
@@ -21,11 +24,21 @@ const oppositeState = computed(() => {
 const login = ref("")
 const password = ref("")
 
+const loginError = computed(() => {
+  if (login.value.length <= 3) return "Should be at least 3 characters long"
+  if ((/[^a-zA-Z0-9_-]/.test(login.value))) return "Should match [a-zA-Z0-9_-]"
+  return null
+})
+const passwordError = computed(() => {
+  if (password.value.length <= 3) return "Should be at least 3 characters long"
+  return null
+})
+
 const loginIncorrect = computed(() => {
-  return login.value.length < 3
+  return loginError.value != null
 })
 const passwordIncorrect = computed(() => {
-  return password.value.length < 3
+  return passwordError.value != null
 })
 
 const sendButtonInactive = computed(() => {
@@ -62,6 +75,7 @@ async function performSend(link: RequestInfo, requestOptions: any) {
   } else {
     response.text().then(text => {
       console.log(text)
+      serverAuthError.value = text
     })
     return false
   }
@@ -79,11 +93,11 @@ function toggleState() {
   else if (state.value == State.register) state.value = State.login
   else throw Error("unknown state")
 }
-
 </script>
 
 <template>
   <LoadingCircle v-if="loading"/>
+  <ErrorPopup v-model="serverAuthError"/>
   <div class="screen">
     <div class="registration-block">
       <div class="state-label-container">
@@ -95,6 +109,7 @@ function toggleState() {
         <input class="input-field"
                :class="{ 'incorrect-input-field' : loginIncorrect }"
                v-model="login"/>
+        <span class="error-label" v-if="loginIncorrect">{{ loginError }}</span>
       </div>
 
       <div class="input-block">
@@ -103,6 +118,7 @@ function toggleState() {
                class="input-field"
                :class="{ 'incorrect-input-field' : passwordIncorrect }"
                v-model="password"/>
+        <span class="error-label" v-if="passwordIncorrect">{{ passwordError }}</span>
       </div>
 
       <button class="send-button" @click="send" :class="{ 'inactive-send-button' : sendButtonInactive }">Send</button>
@@ -170,6 +186,10 @@ function toggleState() {
 .incorrect-input-field {
   outline: none;
   border-color: indianred;
+}
+
+.error-label {
+  color: indianred;
 }
 
 
