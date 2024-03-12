@@ -3,6 +3,7 @@
 import Tag from "@/components/Tag.vue";
 import Checkbox from "@/components/Checkbox.vue";
 import {ref} from "vue";
+import EditButton from "@/components/icons/EditButton.vue";
 
 const props = defineProps(["data"])
 
@@ -12,22 +13,24 @@ const checked = ref(props.data.checked)
 
 <template>
   <div class="to-buy-entry">
-    <checkbox v-model="checked" class="check-box"/>
-    <div class="emoji">{{ data.emoji }}</div>
-    <div class="main-info-container">
-      <div class="name-and-price">
+    <div class="left-content">
+      <checkbox v-model="checked" class="check-box"/>
+      <div class="emoji">{{ data.emoji }}</div>
+      <div class="main-info-container">
+        <div class="name-and-price">
         <span class="name">
           {{ data.name }}
         </span>
-        <span class="price">
+          <span class="price">
           {{ data.price }}руб
         </span>
-      </div>
-      <div class="tagsList">
-        <tag class="tag" v-for="tag in data.tags" :color="tag.color" :label="tag.label"/>
+        </div>
+        <div class="tagsList">
+          <tag class="tag" v-for="tag in data.tags" :color="tag.color" :label="tag.label"/>
+        </div>
       </div>
     </div>
-    <button></button>
+    <edit-button/>
   </div>
 </template>
 
@@ -37,12 +40,14 @@ const checked = ref(props.data.checked)
   border-radius: 8px;
   padding: 5px 10px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.check-box {
-  height: 20px;
-  width: 20px;
+.left-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .emoji {
@@ -71,6 +76,11 @@ const checked = ref(props.data.checked)
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.edit-button-container {
+  display: flex;
+  justify-content: end;
 }
 
 </style>
