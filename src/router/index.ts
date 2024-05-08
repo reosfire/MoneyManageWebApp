@@ -6,6 +6,9 @@ import Third from "@/screens/application-subscreens/RoomsManagementScreen.vue";
 import ToBuyScreen from "@/screens/application-subscreens/ToBuyScreen.vue";
 import DivisorScreen from "@/screens/application-subscreens/DivisorScreen.vue";
 import RoomsManagementScreen from "@/screens/application-subscreens/RoomsManagementScreen.vue";
+import LoginForm from "@/components/auth/LoginForm.vue";
+import RegistrationForm from "@/components/auth/RegistrationForm.vue";
+import NotFoundScreen from "@/screens/NotFoundScreen.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,17 +22,17 @@ const router = createRouter({
             children: [
                 {
                     path: "/to-buy",
-                    component: ToBuyScreen
+                    component: ToBuyScreen,
                 },
                 {
                     path: "/divisor",
-                    component: DivisorScreen
+                    component: DivisorScreen,
                 },
                 {
                     path: "/rooms",
-                    component: RoomsManagementScreen
+                    component: RoomsManagementScreen,
                 },
-            ]
+            ],
         },
         {
             path: '/auth',
@@ -39,7 +42,19 @@ const router = createRouter({
             // which is lazy-loaded when the route is visited.
             component: () => import('../screens/AuthorizationScreen.vue'),
             meta: { onlyForUnauthorized: true },
-        }
+
+            children: [
+                {
+                    path: "/register",
+                    component: RegistrationForm,
+                },
+                {
+                    path: "/login",
+                    component: LoginForm,
+                },
+            ],
+        },
+        { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundScreen },
     ]
 })
 
