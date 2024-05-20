@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
-import {WebSocket} from "vite";
 
 const emit = defineEmits<{
   (e: 'serverError', errorMessage: string): void
@@ -14,7 +13,26 @@ const tgLink = computed(() => {
   return "https://t.me/SpendingDivisorBot?start=" + tgToken.value
 })
 
-getTelegramToken().then(token => tgToken.value = token)
+const attachedTgLogin = ref("")
+const tgAttached = ref(false)
+
+getTelegramToken().then(token => {
+  tgToken.value = token
+
+  const socket = new WebSocket("wss://moneymanage.ru/api/tg-linkage?token=" + token);
+  socket.onmessage = (event) => {
+    const loginEvent = event.data
+    if (loginEvent.startsWith("cancelled")) {
+      attachedTgLogin.value = ""
+      tgAttached.value = false
+    } else if (loginEvent.startsWith("confirmed")) {
+      attachedTgLogin.value = loginEvent.substring("confirmed;".length)
+      tgAttached.value = true
+    } else {
+      console.log("unknown event: ", event)
+    }
+  }
+})
 
 
 const router = useRouter()
@@ -38,9 +56,12 @@ const loginIncorrect = computed(() => {
 const passwordIncorrect = computed(() => {
   return passwordError.value != null
 })
+const tgIncorrect = computed(() => {
+  return tgAttached.value == false
+})
 
 const sendButtonInactive = computed(() => {
-  return loginIncorrect.value || passwordIncorrect.value
+  return loginIncorrect.value || passwordIncorrect.value || tgIncorrect.value
 })
 
 function send() {
@@ -135,8 +156,10 @@ async function getTelegramToken(): Promise<string> {
     <span class="error-label" v-if="passwordIncorrect">{{ passwordError }}</span>
   </div>
 
-  <div>
-    <a :href="tgLink" target="_blank">Telegram</a>
+  <div class="tg-container">
+    <span class="input-label">Telegram: <a class="tg-link" :href="tgLink" target="_blank">connect</a></span>
+    <span class="error-label" v-if="tgIncorrect">"Telegram must be connected"</span>
+    <div v-if="tgAttached">Attached account name: {{attachedTgLogin}}</div>
   </div>
 
   <button class="send-button" @click="send" :class="{ 'inactive-send-button' : sendButtonInactive }">Send</button>
@@ -204,4 +227,18 @@ async function getTelegramToken(): Promise<string> {
   color: var(--text-secondary);
   background-color: var(--background-clickable);
 }
+
+.tg-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tg-link {
+  color: var(--text-primary);
+}
+
+.tg-link:hover {
+  color: var(--accent-high);
+}
+
 </style>
