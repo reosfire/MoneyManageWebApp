@@ -18,19 +18,17 @@ const checked = ref(props.data.checked)
       <div class="emoji">{{ data.emoji }}</div>
       <div class="main-info-container">
         <div class="name-and-price">
-        <span class="name">
-          {{ data.name }}
-        </span>
-          <span class="price">
-          {{ data.price }}руб
-        </span>
+          <span class="name">{{ data.name }}</span>
         </div>
         <div class="tagsList">
           <tag class="tag" v-for="tag in data.tags" :color="tag.color" :label="tag.label"/>
         </div>
       </div>
     </div>
-    <edit-button/>
+    <div class="right-content">
+      <span class="price">{{ data.price }}руб</span>
+      <edit-button/>
+    </div>
   </div>
 </template>
 
@@ -48,6 +46,12 @@ const checked = ref(props.data.checked)
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.right-content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .emoji {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
+import {WebSocket} from "vite";
 
 const emit = defineEmits<{
   (e: 'serverError', errorMessage: string): void
@@ -45,7 +46,7 @@ const sendButtonInactive = computed(() => {
 function send() {
   if (sendButtonInactive.value) return
 
-  const requestOptions = {
+  const registerOptions = {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
@@ -55,9 +56,18 @@ function send() {
     })
   };
 
-  performRequest("/api/register", requestOptions)
+  const loginOptions = {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      login: login.value,
+      password: password.value,
+    })
+  };
+
+  performRequest("/api/register", registerOptions)
       .then(success => {
-        if (success) performLogin(requestOptions)
+        if (success) performLogin(loginOptions)
       })
 }
 

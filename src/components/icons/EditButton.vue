@@ -20,6 +20,13 @@
   padding: 4px;
   border-radius: 8px;
   cursor: pointer;
+}
 
+.edit-button-container:hover {
+  background-color: var(--background-clickable-highlighted);
+}
+
+.edit-button-container:active {
+  fill: var(--accent-high);
 }
 </style>

@@ -2,27 +2,65 @@
 import {ref} from "vue";
 import ToBuyEntry from "@/components/ToBuyEntry.vue";
 
+let d: any[] = []
+const data = ref(d)
 
-const data: any[] = []
-for (let i = 0; i < 20; i++) {
-  const tags: any[] = []
+console.log(data.value)
 
-  for (let j = 0; j < i; j++) {
-    tags.push({
-      color: "var(--accent-high)",
-      label: "aa"
+getList().then(list => {
+  data.value = list.items
+})
+
+
+function addElement() {
+  add().then(itemUUID => {
+    getList().then(list => {
+      data.value = list.items
     })
-  }
-
-  data.push({
-    name: "Some entry " + i,
-    price: Math.floor(Math.random() * 100),
-    checked: i % 2 == 0,
-    emoji: "🍌",
-    tags: tags,
   })
 }
 
+async function getList() {
+  const requestOptions = {
+    method: "GET",
+  };
+
+  let response = await fetch("/api/shop-list/list?roomId=74f977de-b243-44f9-bc65-7448b63a5814", requestOptions);
+
+  if (response.ok) {
+    return response.json()
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return ""
+  }
+}
+
+async function add() {
+  const requestOptions = {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: "Milk",
+      price: 10.234,
+      checked: false,
+      emoji: "🍌",
+      tags: []
+    })
+  };
+
+  let response = await fetch("/api/shop-list/add?roomId=74f977de-b243-44f9-bc65-7448b63a5814", requestOptions);
+
+  if (response.ok) {
+    return response
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return ""
+  }
+}
 </script>
 
 <template>
@@ -33,12 +71,13 @@ for (let i = 0; i < 20; i++) {
     <div class="entries-list">
       <ToBuyEntry v-for="entry in data" class="entry" :data="entry"/>
     </div>
-    <button class="add-entry-button">Create new</button>
+    <button class="add-entry-button" @click="addElement">Create new</button>
   </div>
 </template>
 
 <style scoped>
 .to-buy-screen {
+  height: 100%;
   display: flex;
   flex-flow: column;
 }
@@ -48,13 +87,13 @@ for (let i = 0; i < 20; i++) {
   margin-bottom: 10px;
   display: flex;
   justify-content: end;
+  flex: 0 1 auto;
 }
 
 .entries-list {
-  height: 60vh;
   overflow-y: auto;
-  padding-right: 10px;
   margin-bottom: 10px;
+  flex: 1 1 auto;
 }
 
 .text-input {
@@ -87,6 +126,7 @@ for (let i = 0; i < 20; i++) {
   color: var(--text-primary);
   border-radius: 8px;
   border: solid 1px var(--accent-low);
+  flex: 0 1 40px;
 }
 .add-entry-button:hover {
   background-color: var(--background-clickable-highlighted);

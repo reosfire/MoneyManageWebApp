@@ -4,7 +4,7 @@ import {ref} from "vue";
 
 const props = defineProps(["color", "label"])
 
-const labelProp = ref(props.color)
+const colorProp = ref(props.color)
 
 </script>
 
@@ -16,7 +16,7 @@ const labelProp = ref(props.color)
 
 <style scoped>
 .tag {
-  --circle-color: v-bind(labelProp);
+  --circle-color: v-bind(colorProp);
   display: flex;
   align-items: center;
   background-color: var(--circle-color);

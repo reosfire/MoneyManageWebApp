@@ -29,41 +29,50 @@ const hideMenu: [(evt: any) => void, OnClickOutsideOptions] = [
 </script>
 
 <template>
-  <header ref="headerRef">
-    <nav>
-      <RouterLink class="router-link" to="/to-buy">to buy</RouterLink>
-      <RouterLink class="router-link" to="/divisor">divisor</RouterLink>
-      <RouterLink class="router-link" to="/rooms">rooms</RouterLink>
-    </nav>
-    <RoomSelectButton/>
-    <profile-button class="profile-icon" @click="toggleMenu" ref="ignoreMenuToggle"/>
-  </header>
-  <suspense>
-    <Menu class="menu" v-if="profileMenuShowing" v-on-click-outside="hideMenu" :style="{
-      'top': height + 'px'
-    }"/>
-  </suspense>
-  <div class="content-holder" :style="{
-    'margin-top': height + 'px'
-  }">
-    <div class="content">
-      <router-view/>
+  <div class="screen">
+    <header ref="headerRef">
+      <nav>
+        <RouterLink class="router-link" to="/to-buy">to buy</RouterLink>
+        <RouterLink class="router-link" to="/divisor">divisor</RouterLink>
+        <RouterLink class="router-link" to="/rooms">rooms</RouterLink>
+      </nav>
+      <RoomSelectButton/>
+      <profile-button class="profile-icon" @click="toggleMenu" ref="ignoreMenuToggle"/>
+    </header>
+    <suspense>
+      <Menu class="menu"
+            v-if="profileMenuShowing"
+            v-on-click-outside="hideMenu"
+            :style="{'top': height + 'px'}"/>
+    </suspense>
+    <div class="content-holder">
+      <div class="content">
+        <router-view/>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-header {
-  position: fixed;
-  top: 0;
+.screen {
+  height: 100%;
+  max-height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
+header {
+  width: 100%;
   background-color: var(--background-secondary);
   border-bottom: solid 2px var(--accent-high);
-  padding: 10px;
+  padding: 8px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  flex: 0 1 auto;
 }
 
 nav {
@@ -120,16 +129,19 @@ nav {
 }
 
 .content-holder {
-  max-width: 100%;
-  padding: 10px 10% 0 10%;
+  width: 100%;
+  padding: 10px 10% 10px 10%;
+  flex: 1 1 auto;
+  height: 50%; /* this is a hack that works with flexs. idk what will happen further with my project because of it */
 }
 @media (min-width: 1024px) {
   .content-holder {
-    padding: 10px 20% 0 20%;
+    padding: 10px 20% 10px 20%;
   }
 }
 
 .content {
+  height: 100%;
   background-color: var(--background-secondary);
   padding: 10px;
   border-radius: 10px;
