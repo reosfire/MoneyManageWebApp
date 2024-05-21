@@ -5,8 +5,6 @@ import ToBuyEntry from "@/components/ToBuyEntry.vue";
 let d: any[] = []
 const data = ref(d)
 
-console.log(data.value)
-
 getList().then(list => {
   data.value = list.items
 })
@@ -20,15 +18,73 @@ function addElement() {
   })
 }
 
+function removeElement(id: string) {
+  remove(id).then(() => {
+    getList().then(list => {
+      data.value = list.items
+    })
+  })
+}
+
+function editElement(id: string) {
+  edit(id).then(() => {
+    getList().then(list => {
+      data.value = list.items
+    })
+  })
+}
+
 async function getList() {
   const requestOptions = {
     method: "GET",
   };
 
-  let response = await fetch("/api/shop-list/list?roomId=74f977de-b243-44f9-bc65-7448b63a5814", requestOptions);
+  let response = await fetch("/api/shop-list/list?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions);
 
   if (response.ok) {
     return response.json()
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return ""
+  }
+}
+
+async function edit(id: string) {
+  const requestOptions = {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: "Banana",
+      price: 32123,
+      checked: true,
+      emoji: "G",
+      tags: []
+    })
+  };
+
+  let response = await fetch("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
+
+  if (response.ok) {
+    return response
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return ""
+  }
+}
+
+async function remove(id: string) {
+  const requestOptions = {
+    method: "DELETE",
+  };
+
+  let response = await fetch("/api/shop-list/remove?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
+
+  if (response.ok) {
+    return response
   } else {
     response.text().then(text => {
       console.log(text)
@@ -50,7 +106,7 @@ async function add() {
     })
   };
 
-  let response = await fetch("/api/shop-list/add?roomId=74f977de-b243-44f9-bc65-7448b63a5814", requestOptions);
+  let response = await fetch("/api/shop-list/add?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions);
 
   if (response.ok) {
     return response
@@ -69,7 +125,7 @@ async function add() {
       <input class="text-input" type="text" placeholder="Search">
     </div>
     <div class="entries-list">
-      <ToBuyEntry v-for="entry in data" class="entry" :data="entry"/>
+      <ToBuyEntry v-for="entry in data" :data="entry" class="entry" @editClicked="editElement"/>
     </div>
     <button class="add-entry-button" @click="addElement">Create new</button>
   </div>

@@ -6,8 +6,15 @@ import {ref} from "vue";
 import EditButton from "@/components/icons/EditButton.vue";
 
 const props = defineProps(["data"])
+const emit = defineEmits<{
+  (e: 'editClicked', id: string): void
+}>()
 
 const checked = ref(props.data.checked)
+
+function onEditClicked() {
+  emit('editClicked', props.data.uuid)
+}
 
 </script>
 
@@ -27,7 +34,7 @@ const checked = ref(props.data.checked)
     </div>
     <div class="right-content">
       <span class="price">{{ data.price }}руб</span>
-      <edit-button/>
+      <edit-button @click="onEditClicked"/>
     </div>
   </div>
 </template>

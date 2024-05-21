@@ -87,7 +87,7 @@ nav {
   font-size: 1.5em;
   text-decoration: none;
   user-select: none;
-  padding: 1px 15px 3px 15px;
+  padding: 0 10px 3px 10px;
   border-radius: 10px;
 }
 
@@ -95,14 +95,9 @@ nav {
   background-color: var(--background-clickable-highlighted);
 }
 
-.router-link:active {
-  border: solid 1px var(--accent-middle);
-  padding: 0 14px 2px 14px;
-}
-
 .router-link-active {
   border-bottom: solid 3px var(--accent-high);
-  padding: 1px 15px 0 15px;
+  padding: 0 10px 2px 10px;
   border-radius: 0;
 }
 
@@ -113,7 +108,6 @@ nav {
 .router-link-active:active {
   color: var(--text-primary);
   border: none;
-  padding: 1px 15px 0 15px;
   border-bottom: solid 3px var(--accent-high);
 }
 
