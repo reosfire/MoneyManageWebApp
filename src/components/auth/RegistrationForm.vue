@@ -42,7 +42,7 @@ const password = ref("")
 
 const loginError = computed(() => {
   if (login.value.length < 3) return "Should be at least 3 characters long"
-  if ((/[^a-zA-Z0-9_-]/.test(login.value))) return "Should match [a-zA-Z0-9_-]"
+  if (/[^a-zA-Z0-9_-]/.test(login.value)) return "Should match [a-zA-Z0-9_-]"
   return null
 })
 const passwordError = computed(() => {
@@ -195,25 +195,8 @@ async function getTelegramToken(): Promise<string> {
 }
 
 .send-button {
-  background-color: var(--background-clickable);
-  color: var(--text-primary);
   width: 100%;
-  border-radius: 10px;
-  height: 30px;
-  cursor: pointer;
-  border: solid 1px var(--accent-low);
-  transition-duration: 200ms;
-  outline: none;
-}
-
-.send-button:hover {
-  border: solid 1px var(--accent-middle);
-  background-color: var(--background-clickable-highlighted);
-}
-
-.send-button:active {
-  border: solid 1px var(--accent-high);
-  color: var(--accent-high);
+  height: 26px;
 }
 
 .inactive-send-button {

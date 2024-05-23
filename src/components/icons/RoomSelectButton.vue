@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="rooms-dropdown">
     <div class="label">room 1</div>
@@ -18,7 +14,7 @@
   margin-right: 2%;
   padding: 1px 10px 1px 10px;
   border: solid 1px var(--accent-low);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   user-select: none;
   display: flex;

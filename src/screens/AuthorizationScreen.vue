@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import {computed, type Ref, ref, watchEffect} from 'vue'
-import LoadingCircle from "@/components/LoadingCircle.vue";
+import LoadingCircle from "@/components/reusable/LoadingCircle.vue";
 import ErrorPopup from "@/components/auth/ErrorPopup.vue";
-import LoginForm from "@/components/auth/LoginForm.vue";
 import {RouterView, useRouter} from "vue-router";
 
 const router = useRouter()
@@ -69,7 +68,7 @@ function catchError(message: string) {
 
 .registration-block {
   background-color: var(--background-secondary);
-  border-radius: 20px;
+  border-radius: 16px;
   border: solid 1px var(--accent-low);
   padding: 20px;
   width: 50%;

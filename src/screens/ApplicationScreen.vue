@@ -88,7 +88,7 @@ nav {
   text-decoration: none;
   user-select: none;
   padding: 0 10px 3px 10px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .router-link:hover {
@@ -136,8 +136,10 @@ nav {
 
 .content {
   height: 100%;
+  width: 100%;
+  position: relative;
   background-color: var(--background-secondary);
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 </style>

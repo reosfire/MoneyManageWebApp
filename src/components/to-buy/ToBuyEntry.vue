@@ -1,19 +1,31 @@
 <script setup lang="ts">
 
-import Tag from "@/components/Tag.vue";
-import Checkbox from "@/components/Checkbox.vue";
-import {ref} from "vue";
+import Tag from "@/components/to-buy/Tag.vue";
+import Checkbox from "@/components/reusable/Checkbox.vue";
+import {ref, watch} from "vue";
 import EditButton from "@/components/icons/EditButton.vue";
+import DeleteButton from "@/components/icons/DeleteButton.vue";
 
 const props = defineProps(["data"])
 const emit = defineEmits<{
   (e: 'editClicked', id: string): void
+  (e: 'deleteClicked', id: string): void
+  (e: 'checkStateChanged', id: string, newValue: boolean): void
 }>()
 
 const checked = ref(props.data.checked)
 
+watch(checked, (newValue: boolean) => {
+  console.log(newValue)
+  emit("checkStateChanged", props.data.uuid, newValue)
+})
+
 function onEditClicked() {
   emit('editClicked', props.data.uuid)
+}
+
+function onDeleteClicked() {
+  emit('deleteClicked', props.data.uuid)
 }
 
 </script>
@@ -35,6 +47,7 @@ function onEditClicked() {
     <div class="right-content">
       <span class="price">{{ data.price }}руб</span>
       <edit-button @click="onEditClicked"/>
+      <delete-button @click="onDeleteClicked"/>
     </div>
   </div>
 </template>

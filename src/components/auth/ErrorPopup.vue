@@ -34,7 +34,7 @@ function hide() {
 .error-container {
   background-color: var(--background-secondary);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   flex-flow: column;
   border: solid 1px indianred;
@@ -42,15 +42,6 @@ function hide() {
 }
 
 .ok-button {
-  outline: none;
-  border: solid 1px var(--accent-low);
-  background-color: var(--background-clickable);
   font-size: 1.1em;
-  color: var(--text-primary);
-  border-radius: 8px;
-  cursor: pointer;
-}
-.ok-button:hover {
-  background-color: var(--background-clickable-highlighted);
 }
 </style>

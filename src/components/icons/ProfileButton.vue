@@ -46,7 +46,7 @@ svg {
     width: 46px;
     height: 46px;
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   svg {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {ref} from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
@@ -23,13 +22,14 @@ const logout = () => {
 <template>
   <div class="menu">
     <div class="username-label">{{username}}</div>
-    <div class="menu-item" @click="logout">Logout</div>
-    <div class="menu-item">Settings</div>
+    <button class="menu-item" @click="logout">Logout</button>
+    <button class="menu-item">Settings</button>
   </div>
 </template>
 
 <style scoped>
 .menu {
+  z-index: 1;
   border-radius: 8px;
   border: solid 1px var(--accent-low);
   background-color: var(--background-secondary);
@@ -46,16 +46,9 @@ const logout = () => {
 }
 .menu-item {
   width: 200px;
-  font-size: 1.2em;
-  background-color: var(--background-clickable);
-  color: var(--text-primary);
+  font-size: 1.1em;
   padding: 5px;
   margin-bottom: 10px;
-
-  border-radius: 8px;
-  border: solid 1px var(--accent-low);
-  cursor: pointer;
-  user-select: none;
 }
 .menu-item:hover {
   border: solid 1px var(--accent-middle);
