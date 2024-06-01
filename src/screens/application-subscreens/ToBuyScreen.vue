@@ -6,7 +6,7 @@ import ToByEntryEditor from "@/components/to-buy/ToByEntryEditor.vue";
 let d: any[] = []
 const data = ref(d)
 
-getList().then(list => {
+sendGetListRequest().then(list => {
   data.value = list.items
 })
 
@@ -36,52 +36,55 @@ function editButtonClicked(id: string) {
   }
 }
 
+function checkStateChanged(id: string, newValue: boolean) {
+  updateChecked(id, newValue)
+}
+
 function hideEditor() {
   editorShown.value = false
 }
 
-function addElement(name: string, price: Number, emoji: string) {
-  add(name, price, emoji).then(itemUUID => {
-    getList().then(list => {
-      data.value = list.items
-    })
-  })
+async function addElement(name: string, price: Number, emoji: string) {
+  await sendAddRequest(name, price, emoji)
+  data.value = (await sendGetListRequest()).items
 }
 
-function removeElement(id: string) {
-  remove(id).then(() => {
-    getList().then(list => {
-      data.value = list.items
-    })
-  })
+async function removeElement(id: string) {
+  await sendRemoveRequest(id)
+  data.value = (await sendGetListRequest()).items
 }
 
-function editElement(id: string, name: string, price: Number, emoji: string) {
-  edit(id, name, price, emoji).then(() => {
-    getList().then(list => {
-      data.value = list.items
-    })
-  })
+async function editElement(id: string, name: string, price: Number, emoji: string) {
+  await sendEditRequest(id, name, price, emoji)
+  data.value = (await sendGetListRequest()).items
 }
 
-async function getList() {
+async function updateChecked(id: string, checked: boolean) {
+  await sendCheckedStateEditRequest(id, checked)
+  data.value = (await sendGetListRequest()).items
+}
+
+async function sendGetListRequest() {
   const requestOptions = {
     method: "GET",
   };
 
-  let response = await fetch("/api/shop-list/list?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions);
-
-  if (response.ok) {
-    return response.json()
-  } else {
-    response.text().then(text => {
-      console.log(text)
-    })
-    return ""
-  }
+  const response = await sendRequest("/api/shop-list/list?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions)
+  return response?.json()
 }
 
-async function edit(id: string, name: string, price: Number, emoji: string) {
+async function sendCheckedStateEditRequest(id: string, checked: boolean) {
+  const requestOptions = {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      checked: checked
+    })
+  };
+
+  return await sendRequest("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
+}
+async function sendEditRequest(id: string, name: string, price: Number, emoji: string) {
   const requestOptions = {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -93,36 +96,16 @@ async function edit(id: string, name: string, price: Number, emoji: string) {
     })
   };
 
-  let response = await fetch("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
-
-  if (response.ok) {
-    return response
-  } else {
-    response.text().then(text => {
-      console.log(text)
-    })
-    return ""
-  }
+  return await sendRequest("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions)
 }
-
-async function remove(id: string) {
+async function sendRemoveRequest(id: string) {
   const requestOptions = {
     method: "DELETE",
   };
 
-  let response = await fetch("/api/shop-list/remove?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
-
-  if (response.ok) {
-    return response
-  } else {
-    response.text().then(text => {
-      console.log(text)
-    })
-    return ""
-  }
+  return await sendRequest("/api/shop-list/remove?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions)
 }
-
-async function add(name: string, price: Number, emoji: string) {
+async function sendAddRequest(name: string, price: Number, emoji: string) {
   const requestOptions = {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -135,7 +118,10 @@ async function add(name: string, price: Number, emoji: string) {
     })
   };
 
-  let response = await fetch("/api/shop-list/add?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions);
+  return await sendRequest("/api/shop-list/add?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions)
+}
+async function sendRequest(url: string, options: any) {
+  let response = await fetch(url, options);
 
   if (response.ok) {
     return response
@@ -143,9 +129,10 @@ async function add(name: string, price: Number, emoji: string) {
     response.text().then(text => {
       console.log(text)
     })
-    return ""
+    return null
   }
 }
+
 </script>
 
 <template>
@@ -161,7 +148,7 @@ async function add(name: string, price: Number, emoji: string) {
                   class="entry"
                   @editClicked="editButtonClicked"
                   @deleteClicked="removeElement"
-                  @checkStateChanged=""
+                  @checkStateChanged="checkStateChanged"
       />
     </div>
     <button class="add-entry-button" @click="addButtonClicked">Create new</button>
