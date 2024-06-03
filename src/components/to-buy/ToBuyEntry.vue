@@ -2,7 +2,6 @@
 
 import Tag from "@/components/to-buy/Tag.vue";
 import Checkbox from "@/components/reusable/Checkbox.vue";
-import {ref, watch} from "vue";
 import EditButton from "@/components/icons/EditButton.vue";
 import DeleteButton from "@/components/icons/DeleteButton.vue";
 

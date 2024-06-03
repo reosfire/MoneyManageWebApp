@@ -1,6 +1,17 @@
+<script setup lang="ts">
+
+const props = defineProps(["selectedRoom"])
+
+function shortSelectedRoomName(fullName: string) {
+  if (fullName.length > 16) return fullName.substring(0, 13) + "..."
+  else return fullName
+}
+
+</script>
+
 <template>
   <div class="rooms-dropdown">
-    <div class="label">room 1</div>
+    <div class="label">{{ shortSelectedRoomName(props.selectedRoom) }}</div>
     <svg xmlns="http://www.w3.org/2000/svg" id="arrow" x="0" y="0" version="1.1" viewBox="5 4 19 18"
          xml:space="preserve">
       <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"

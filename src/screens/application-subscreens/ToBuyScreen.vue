@@ -1,20 +1,36 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import ToBuyEntry from "@/components/to-buy/ToBuyEntry.vue";
 import ToByEntryEditor from "@/components/to-buy/ToByEntryEditor.vue";
+import ConfirmationMenu from "@/components/reusable/ConfirmationMenu.vue";
 
-let d: any[] = []
+const d: any[] = []
 const data = ref(d)
+
+const searchQuery = ref("")
+
+watch(searchQuery, () => {
+  sendGetListRequest().then(list => {
+    data.value = list.items
+  })
+})
+
+const roomId = localStorage.getItem("selected-room-id")
 
 sendGetListRequest().then(list => {
   data.value = list.items
 })
 
-const roomId = "652497f4-8eaf-48b6-ad6e-e86afad35800"
-
 const editorShown = ref(false)
 const positiveAction = ref((name: string, price: Number, emoji: string) => {})
 const editingData = ref({})
+
+const removeConfirmationShown = ref(false)
+const itemToRemove = ref()
+
+function hideRemoveConfirmation() {
+  removeConfirmationShown.value = false
+}
 
 function addButtonClicked() {
   editingData.value = {
@@ -27,6 +43,19 @@ function addButtonClicked() {
     addElement(name, price, emoji)
     hideEditor()
   }
+}
+
+function removeButtonClicked(id: string) {
+  const found = data.value.find(entry => entry.uuid == id)
+  if (found == null) return
+
+  itemToRemove.value = found
+  removeConfirmationShown.value = true
+}
+
+function removeConfirmed() {
+  removeElement(itemToRemove.value.uuid)
+  removeConfirmationShown.value = false
 }
 
 function editButtonClicked(id: string) {
@@ -71,10 +100,8 @@ async function sendGetListRequest() {
     method: "GET",
   };
 
-  const response = await sendRequest("/api/shop-list/list?roomId=" + roomId, requestOptions)
-  const res = response?.json()
-  console.log(res)
-  return res
+  const response = await sendRequest("/api/shop-list/list?roomId=" + roomId + "&query=" + searchQuery.value, requestOptions)
+  return response?.json()
 }
 
 async function sendCheckedStateEditRequest(id: string, checked: boolean) {
@@ -141,17 +168,26 @@ async function sendRequest(url: string, options: any) {
 
 <template>
   <div class="editor-container" v-if="editorShown">
-    <to-by-entry-editor :data="editingData" @cancelClicked="hideEditor" @confirmClicked="positiveAction"/>
+    <to-by-entry-editor :data="editingData"
+                        @cancelClicked="hideEditor"
+                        @confirmClicked="positiveAction"
+    />
+  </div>
+  <div class="delete-confirmation-container" v-if="removeConfirmationShown">
+    <confirmation-menu :title="'Delete item: ' + itemToRemove.name"
+                       @cancelPressed="hideRemoveConfirmation"
+                       @confirmPressed="removeConfirmed"
+    />
   </div>
   <div class="to-buy-screen">
     <div class="search-container">
-      <input class="text-input" type="text" placeholder="Search">
+      <input class="text-input" type="text" placeholder="Search" v-model="searchQuery">
     </div>
     <div class="entries-list">
       <ToBuyEntry v-for="entry in data" :data="entry"
                   class="entry"
                   @editClicked="editButtonClicked"
-                  @deleteClicked="removeElement"
+                  @deleteClicked="removeButtonClicked"
                   @checkStateChanged="checkStateChanged"
       />
     </div>
@@ -161,6 +197,14 @@ async function sendRequest(url: string, options: any) {
 
 <style scoped>
 .editor-container {
+  position: absolute;
+  margin: -10px;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2px);
+}
+
+.delete-confirmation-container {
   position: absolute;
   margin: -10px;
   width: 100%;

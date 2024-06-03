@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
+import {ref} from "vue";
 
 const router = useRouter()
 
-const userData = await fetch("api/")
-const json = await userData.json()
-const username = json.login
+const username = ref("")
+
+sendRequest("api/").then((response) => {
+  response?.json()?.then((userData) => {
+    username.value = userData.login
+  })
+})
 
 const logout = () => {
   fetch("api/logout")
@@ -17,6 +22,21 @@ const logout = () => {
         }
       })
 }
+
+
+async function sendRequest(url: string) {
+  let response = await fetch(url);
+
+  if (response.ok) {
+    return response
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return null
+  }
+}
+
 </script>
 
 <template>
@@ -46,13 +66,8 @@ const logout = () => {
 }
 .menu-item {
   width: 200px;
-  font-size: 1.1em;
   padding: 5px;
   margin-bottom: 10px;
-}
-.menu-item:hover {
-  border: solid 1px var(--accent-middle);
-  background-color: var(--background-clickable-highlighted);
 }
 .menu-item:last-child {
   margin-bottom: 0;

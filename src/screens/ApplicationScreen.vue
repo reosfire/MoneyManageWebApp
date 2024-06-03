@@ -5,26 +5,106 @@ import Menu from "@/components/Menu.vue";
 import {vOnClickOutside} from '@vueuse/components';
 import {type OnClickOutsideOptions, useElementBounding} from "@vueuse/core";
 import RoomSelectButton from "@/components/icons/RoomSelectButton.vue";
+import RoomSelector from "@/components/RoomSelector.vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const headerRef = ref(null)
 const {height} = useElementBounding(headerRef)
 
-const profileMenuShowing = ref(false)
+const profileMenuVisible = ref(false)
+const roomSelectorVisible = ref(false)
 
 function toggleMenu() {
-  profileMenuShowing.value = !profileMenuShowing.value
+  profileMenuVisible.value = !profileMenuVisible.value
+}
+
+function toggleRoomSelector() {
+  roomSelectorVisible.value = !roomSelectorVisible.value
 }
 
 const ignoreMenuToggle = ref()
+const ignoreRoomSelectToggle = ref()
 
 const hideMenu: [(evt: any) => void, OnClickOutsideOptions] = [
   () => {
-    if (profileMenuShowing.value == true) {
-      profileMenuShowing.value = false
+    if (profileMenuVisible.value == true) {
+      profileMenuVisible.value = false
     }
   },
   {ignore: [ignoreMenuToggle]},
 ]
+
+const hideRoomSelector: [(evt: any) => void, OnClickOutsideOptions] = [
+  () => {
+    if (roomSelectorVisible.value == true) {
+      roomSelectorVisible.value = false
+    }
+  },
+  {ignore: [ignoreRoomSelectToggle]},
+]
+
+function onRoomSelected(roomData: any) {
+  const currentRoom = localStorage.getItem("selected-room-id")
+  roomSelectorVisible.value = false
+  if (roomData.id == currentRoom) return
+
+  localStorage.setItem("selected-room-id", roomData.id)
+  localStorage.setItem("selected-room-name", roomData.name)
+  router.go(0)
+}
+
+const rooms = ref<any[]>([])
+const selectedRoom = ref("")
+
+sendGetRoomsRequest().then(roomsResponse => {
+  rooms.value = roomsResponse
+
+  const currentRoom = localStorage.getItem("selected-room-id")
+  if (currentRoom == null) {
+    localStorage.setItem("selected-room-id", roomsResponse[0].id)
+    localStorage.setItem("selected-room-name", roomsResponse[0].name)
+    selectedRoom.value = roomsResponse[0].name
+  } else {
+    let contains = false;
+    for (let i = 0; i < roomsResponse.length; i++) {
+      if (roomsResponse[i].id == currentRoom) {
+        contains = true
+        break
+      }
+    }
+    if (!contains) {
+      localStorage.setItem("selected-room-id", roomsResponse[0].id)
+      localStorage.setItem("selected-room-name", roomsResponse[0].name)
+      selectedRoom.value = roomsResponse[0].name
+    } else {
+      selectedRoom.value = localStorage.getItem("selected-room-name")
+    }
+  }
+})
+
+async function sendGetRoomsRequest() {
+  const requestOptions = {
+    method: "GET",
+  };
+
+  const response = await sendRequest("/api/rooms/list", requestOptions)
+  return response?.json()
+}
+
+async function sendRequest(url: string, options: any) {
+  let response = await fetch(url, options);
+
+  if (response.ok) {
+    return response
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return null
+  }
+}
 
 </script>
 
@@ -36,15 +116,21 @@ const hideMenu: [(evt: any) => void, OnClickOutsideOptions] = [
         <RouterLink class="router-link" to="/divisor">divisor</RouterLink>
         <RouterLink class="router-link" to="/rooms">rooms</RouterLink>
       </nav>
-      <RoomSelectButton/>
-      <profile-button class="profile-icon" @click="toggleMenu" ref="ignoreMenuToggle"/>
+      <RoomSelectButton :selectedRoom="selectedRoom" @click="toggleRoomSelector" ref="ignoreRoomSelectToggle"/>
+      <ProfileButton class="profile-icon" @click="toggleMenu" ref="ignoreMenuToggle"/>
     </header>
-    <suspense>
-      <Menu class="menu"
-            v-if="profileMenuShowing"
-            v-on-click-outside="hideMenu"
-            :style="{'top': height + 'px'}"/>
-    </suspense>
+    <Menu class="menu"
+          v-if="profileMenuVisible"
+          v-on-click-outside="hideMenu"
+          :style="{'top': height + 'px'}"
+    />
+    <RoomSelector class="room-selector"
+                  v-if="roomSelectorVisible"
+                  v-on-click-outside="hideRoomSelector"
+                  :style="{'top': height + 'px'}"
+                  :rooms="rooms"
+                  @roomSelected="onRoomSelected"
+    />
     <div class="content-holder">
       <div class="content">
         <router-view/>
