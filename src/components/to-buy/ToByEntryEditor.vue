@@ -27,8 +27,6 @@ const priceError = computed(() => {
   return null
 })
 const emojiError = computed(() => {
-  console.log(emoji.value.length)
-  console.log(emoji.value)
   if (emoji.value.length != 1) return "emoji must be one char"
   return null
 })
@@ -52,7 +50,7 @@ function onConfirmClicked() {
 
   emit("confirmClicked",
       name.value.trim(),
-      parseFloat(price.value),
+      parseFloat(price.value.replace(',', '.')),
       emoji.value,
   )
 }

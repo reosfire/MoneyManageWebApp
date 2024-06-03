@@ -10,6 +10,8 @@ sendGetListRequest().then(list => {
   data.value = list.items
 })
 
+const roomId = "652497f4-8eaf-48b6-ad6e-e86afad35800"
+
 const editorShown = ref(false)
 const positiveAction = ref((name: string, price: Number, emoji: string) => {})
 const editingData = ref({})
@@ -69,8 +71,10 @@ async function sendGetListRequest() {
     method: "GET",
   };
 
-  const response = await sendRequest("/api/shop-list/list?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions)
-  return response?.json()
+  const response = await sendRequest("/api/shop-list/list?roomId=" + roomId, requestOptions)
+  const res = response?.json()
+  console.log(res)
+  return res
 }
 
 async function sendCheckedStateEditRequest(id: string, checked: boolean) {
@@ -82,7 +86,7 @@ async function sendCheckedStateEditRequest(id: string, checked: boolean) {
     })
   };
 
-  return await sendRequest("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions);
+  return await sendRequest("/api/shop-list/edit?roomId=" + roomId + "&id=" + id, requestOptions);
 }
 async function sendEditRequest(id: string, name: string, price: Number, emoji: string) {
   const requestOptions = {
@@ -96,14 +100,14 @@ async function sendEditRequest(id: string, name: string, price: Number, emoji: s
     })
   };
 
-  return await sendRequest("/api/shop-list/edit?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions)
+  return await sendRequest("/api/shop-list/edit?roomId=" + roomId + "&id=" + id, requestOptions)
 }
 async function sendRemoveRequest(id: string) {
   const requestOptions = {
     method: "DELETE",
   };
 
-  return await sendRequest("/api/shop-list/remove?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c&id=" + id, requestOptions)
+  return await sendRequest("/api/shop-list/remove?roomId=" + roomId + "&id=" + id, requestOptions)
 }
 async function sendAddRequest(name: string, price: Number, emoji: string) {
   const requestOptions = {
@@ -118,7 +122,7 @@ async function sendAddRequest(name: string, price: Number, emoji: string) {
     })
   };
 
-  return await sendRequest("/api/shop-list/add?roomId=adf55441-fbac-43b1-8953-11cd13ad2f1c", requestOptions)
+  return await sendRequest("/api/shop-list/add?roomId=" + roomId, requestOptions)
 }
 async function sendRequest(url: string, options: any) {
   let response = await fetch(url, options);

@@ -13,13 +13,6 @@ const emit = defineEmits<{
   (e: 'checkStateChanged', id: string, newValue: boolean): void
 }>()
 
-const checked = ref(props.data.checked)
-
-watch(checked, (newValue: boolean) => {
-  console.log(newValue)
-  emit("checkStateChanged", props.data.uuid, newValue)
-})
-
 function onEditClicked() {
   emit('editClicked', props.data.uuid)
 }
@@ -28,12 +21,16 @@ function onDeleteClicked() {
   emit('deleteClicked', props.data.uuid)
 }
 
+function onCheckStateChanged(newValue: boolean) {
+  emit('checkStateChanged', props.data.uuid, newValue)
+}
+
 </script>
 
 <template>
   <div class="to-buy-entry">
     <div class="left-content">
-      <checkbox v-model="checked" class="check-box"/>
+      <checkbox class="check-box" :state="data.checked" @checkStateChanged="onCheckStateChanged"/>
       <div class="emoji">{{ data.emoji }}</div>
       <div class="main-info-container">
         <div class="name-and-price">
