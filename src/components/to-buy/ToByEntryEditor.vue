@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {vOnClickOutside} from '@vueuse/components';
+import EmojiPicker, {type EmojiExt} from 'vue3-emoji-picker'
+import 'vue3-emoji-picker/css'
 
 const props = defineProps(["data"])
 
@@ -13,6 +15,30 @@ const emit = defineEmits<{
 const name = ref(props.data.name)
 const price = ref(props.data.price.toString())
 const emoji = ref(props.data.emoji)
+const emojiPickerShown = ref(false)
+
+function toggleEmojiPicker() {
+  emojiPickerShown.value = !emojiPickerShown.value
+}
+
+function showEmojiPicker() {
+  emojiPickerShown.value = true
+}
+
+function onEmojiSelect(selectResult: EmojiExt) {
+  emojiPickerShown.value = false
+  emoji.value = selectResult.i
+}
+
+watch(name, () => {
+  sendRequest("/api/emojis/get?query=" + name.value).then(response =>
+      response?.text().then( resultEmoji => {
+        if (resultEmoji != "❓" || emoji.value == null || emoji.value.trim().length == 0) {
+          emoji.value = resultEmoji
+        }
+      })
+  )
+})
 
 const nameError = computed(() => {
   if (name.value.trim().length == 0) return "name must not be empty"
@@ -26,10 +52,6 @@ const priceError = computed(() => {
   if (parsed < 0) return "price must not be negative"
   return null
 })
-const emojiError = computed(() => {
-  if (emoji.value.length != 1) return "emoji must be one char"
-  return null
-})
 
 const nameInvalid = computed(() => {
   return nameError.value != null
@@ -37,12 +59,9 @@ const nameInvalid = computed(() => {
 const priceInvalid = computed(() => {
   return priceError.value != null
 })
-const emojiInvalid = computed(() => {
-  return emojiError.value != null
-})
 
 const cantSend = computed(() => {
-  return nameInvalid.value || priceInvalid.value || emojiInvalid.value
+  return nameInvalid.value || priceInvalid.value
 })
 
 function onConfirmClicked() {
@@ -57,6 +76,19 @@ function onConfirmClicked() {
 
 function onCancelClicked() {
   emit("cancelClicked")
+}
+
+async function sendRequest(url: string) {
+  let response = await fetch(url);
+
+  if (response.ok) {
+    return response
+  } else {
+    response.text().then(text => {
+      console.log(text)
+    })
+    return null
+  }
 }
 
 </script>
@@ -89,15 +121,11 @@ function onCancelClicked() {
       </div>
       <div class="input-block">
         <div class="input-field-container">
-          <div class="input-field-label"
-               :class="{ 'invalid-input-field-label' : emojiInvalid }"
-          >Emoji:</div>
-          <input class="input-field"
-                 :class="{ 'invalid-input-field' : emojiInvalid }"
-                 v-model="emoji" type="text">
+          <div class="input-field-label">Emoji:</div>
+          <div @click="toggleEmojiPicker" class="emoji-preview">{{emoji}}</div>
         </div>
-        <span class="error-label" v-if="emojiInvalid">{{ emojiError }}</span>
       </div>
+      <EmojiPicker class="emoji-picker" v-if="emojiPickerShown" :native="true" @select="onEmojiSelect" />
       <div class="action-buttons-block">
         <button class="action-button"
                 :class="{ 'inactive-confirm-button' : cantSend }"
@@ -127,6 +155,7 @@ function onCancelClicked() {
 
 .input-field-container {
   display: flex;
+  align-items: center;
   gap: 3%;
 }
 
@@ -167,6 +196,15 @@ function onCancelClicked() {
 
 .invalid-input-field-label {
   color: indianred;
+}
+
+.emoji-picker {
+  position: absolute;
+  max-height:50%;
+}
+.emoji-preview {
+  font-size: 1.5em;
+  cursor: pointer;
 }
 
 .action-button {
