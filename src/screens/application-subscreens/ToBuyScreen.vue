@@ -167,13 +167,13 @@ async function sendRequest(url: string, options: any) {
 </script>
 
 <template>
-  <div class="editor-container" v-if="editorShown">
+  <div class="popup-container" v-if="editorShown">
     <to-by-entry-editor :data="editingData"
                         @cancelClicked="hideEditor"
                         @confirmClicked="positiveAction"
     />
   </div>
-  <div class="delete-confirmation-container" v-if="removeConfirmationShown">
+  <div class="popup-container" v-if="removeConfirmationShown">
     <confirmation-menu :title="'Delete item: ' + itemToRemove.name"
                        @cancelPressed="hideRemoveConfirmation"
                        @confirmPressed="removeConfirmed"
@@ -196,15 +196,7 @@ async function sendRequest(url: string, options: any) {
 </template>
 
 <style scoped>
-.editor-container {
-  position: absolute;
-  margin: -10px;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(2px);
-}
-
-.delete-confirmation-container {
+.popup-container {
   position: absolute;
   margin: -10px;
   width: 100%;

@@ -79,7 +79,7 @@ sendGetRoomsRequest().then(roomsResponse => {
       localStorage.setItem("selected-room-name", roomsResponse[0].name)
       selectedRoom.value = roomsResponse[0].name
     } else {
-      selectedRoom.value = localStorage.getItem("selected-room-name")
+      selectedRoom.value = localStorage.getItem("selected-room-name")!!
     }
   }
 })
@@ -89,7 +89,7 @@ async function sendGetRoomsRequest() {
     method: "GET",
   };
 
-  const response = await sendRequest("/api/rooms/list", requestOptions)
+  const response = await sendRequest("/api/rooms/brief-list", requestOptions)
   return response?.json()
 }
 

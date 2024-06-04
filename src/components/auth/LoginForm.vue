@@ -66,7 +66,10 @@ async function performSend(link: RequestInfo, requestOptions: any) {
 function performLogin(requestOptions: any) {
   performSend("/api/login", requestOptions)
       .then(success => {
-        if (success) router.push("/")
+        if (success) {
+          router.push("/")
+          localStorage.setItem("username", login.value)
+        }
       })
 }
 </script>

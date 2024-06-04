@@ -4,15 +4,10 @@ import {vOnClickOutside} from '@vueuse/components';
 const props = defineProps(["title"])
 const emit = defineEmits<{
   (e: 'confirmPressed'): void
-  (e: 'cancelPressed'): void
 }>()
 
 function onConfirmButtonPressed() {
   emit("confirmPressed")
-}
-
-function onCancelButtonPressed() {
-  emit("cancelPressed")
 }
 
 </script>
@@ -20,11 +15,10 @@ function onCancelButtonPressed() {
 <template>
   <div class="parent-matcher">
     <div class="block"
-         v-on-click-outside="onCancelButtonPressed">
+         v-on-click-outside="onConfirmButtonPressed">
       <div class="title">{{ props.title }}</div>
       <div class="action-buttons-block">
         <button class="action-button" @click="onConfirmButtonPressed">Confirm</button>
-        <button class="action-button" @click="onCancelButtonPressed">Cancel</button>
       </div>
     </div>
   </div>

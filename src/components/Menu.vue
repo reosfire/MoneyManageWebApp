@@ -4,13 +4,7 @@ import {ref} from "vue";
 
 const router = useRouter()
 
-const username = ref("")
-
-sendRequest("api/").then((response) => {
-  response?.json()?.then((userData) => {
-    username.value = userData.login
-  })
-})
+const username = localStorage.getItem("username")
 
 const logout = () => {
   fetch("api/logout")
@@ -21,20 +15,6 @@ const logout = () => {
           response.text().then(() => console.log())
         }
       })
-}
-
-
-async function sendRequest(url: string) {
-  let response = await fetch(url);
-
-  if (response.ok) {
-    return response
-  } else {
-    response.text().then(text => {
-      console.log(text)
-    })
-    return null
-  }
 }
 
 </script>

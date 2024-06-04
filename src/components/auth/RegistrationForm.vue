@@ -95,7 +95,10 @@ function send() {
 function performLogin(requestOptions: any) {
   performRequest("/api/login", requestOptions)
       .then(success => {
-        if (success) router.push("/")
+        if (success) {
+          router.push("/")
+          localStorage.setItem("username", login.value)
+        }
       })
 }
 
