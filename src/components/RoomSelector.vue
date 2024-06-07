@@ -9,8 +9,6 @@ function onRoomClicked(roomData: any) {
   emit("roomSelected", roomData)
 }
 
-console.log(props.rooms)
-
 </script>
 
 <template>

@@ -2,7 +2,6 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import RoomEntry from "@/components/rooms/RoomEntry.vue";
-import ToByEntryEditor from "@/components/to-buy/ToByEntryEditor.vue";
 import InviteCodePopup from "@/components/rooms/InviteCodePopup.vue";
 import TextInputPopup from "@/components/reusable/TextInputPopup.vue";
 

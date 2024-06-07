@@ -3,6 +3,7 @@ import {ref, watch} from "vue";
 import ToBuyEntry from "@/components/to-buy/ToBuyEntry.vue";
 import ToByEntryEditor from "@/components/to-buy/ToByEntryEditor.vue";
 import ConfirmationMenu from "@/components/reusable/ConfirmationMenu.vue";
+import InviteCodePopup from "@/components/rooms/InviteCodePopup.vue";
 
 const d: any[] = []
 const data = ref(d)
@@ -22,7 +23,7 @@ sendGetListRequest().then(list => {
 })
 
 const editorShown = ref(false)
-const positiveAction = ref((name: string, price: Number, emoji: string) => {})
+const positiveAction = ref((name: string, price: Number, emoji: string, hiddenText: string) => {})
 const editingData = ref({})
 
 const removeConfirmationShown = ref(false)
@@ -37,10 +38,11 @@ function addButtonClicked() {
     name: "stub",
     price: 0,
     emoji: "",
+    hiddenText: "",
   }
   editorShown.value = true
-  positiveAction.value = (name: string, price: Number, emoji: string) => {
-    addElement(name, price, emoji)
+  positiveAction.value = (name: string, price: Number, emoji: string, hiddenText: string) => {
+    addElement(name, price, emoji, hiddenText)
     hideEditor()
   }
 }
@@ -53,6 +55,22 @@ function removeButtonClicked(id: string) {
   removeConfirmationShown.value = true
 }
 
+
+const hiddenTextShown = ref(false)
+const hiddenText = ref("")
+function nameClicked(id: string) {
+  const found = data.value.find(entry => entry.uuid == id)
+  if (found == null) return
+
+  hiddenText.value = found.hiddenText
+  hiddenTextShown.value = true
+}
+
+function hideHiddenText() {
+  hiddenText.value = ""
+  hiddenTextShown.value = false
+}
+
 function removeConfirmed() {
   removeElement(itemToRemove.value.uuid)
   removeConfirmationShown.value = false
@@ -61,8 +79,8 @@ function removeConfirmed() {
 function editButtonClicked(id: string) {
   editingData.value = data.value.find((it) => { return it.uuid == id })
   editorShown.value = true
-  positiveAction.value = (name: string, price: Number, emoji: string) => {
-    editElement(id, name, price, emoji)
+  positiveAction.value = (name: string, price: Number, emoji: string, hiddenText: string) => {
+    editElement(id, name, price, emoji, hiddenText)
     hideEditor()
   }
 }
@@ -75,8 +93,8 @@ function hideEditor() {
   editorShown.value = false
 }
 
-async function addElement(name: string, price: Number, emoji: string) {
-  await sendAddRequest(name, price, emoji)
+async function addElement(name: string, price: Number, emoji: string, hiddenText: string) {
+  await sendAddRequest(name, price, emoji, hiddenText)
   data.value = (await sendGetListRequest()).items
 }
 
@@ -85,8 +103,8 @@ async function removeElement(id: string) {
   data.value = (await sendGetListRequest()).items
 }
 
-async function editElement(id: string, name: string, price: Number, emoji: string) {
-  await sendEditRequest(id, name, price, emoji)
+async function editElement(id: string, name: string, price: Number, emoji: string, hiddenText: string) {
+  await sendEditRequest(id, name, price, emoji, hiddenText)
   data.value = (await sendGetListRequest()).items
 }
 
@@ -115,7 +133,7 @@ async function sendCheckedStateEditRequest(id: string, checked: boolean) {
 
   return await sendRequest("/api/shop-list/edit?roomId=" + roomId + "&id=" + id, requestOptions);
 }
-async function sendEditRequest(id: string, name: string, price: Number, emoji: string) {
+async function sendEditRequest(id: string, name: string, price: Number, emoji: string, hiddenText: string) {
   const requestOptions = {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -123,7 +141,8 @@ async function sendEditRequest(id: string, name: string, price: Number, emoji: s
       name: name,
       price: price,
       emoji: emoji,
-      tags: []
+      tags: [],
+      hiddenText: hiddenText,
     })
   };
 
@@ -136,7 +155,7 @@ async function sendRemoveRequest(id: string) {
 
   return await sendRequest("/api/shop-list/remove?roomId=" + roomId + "&id=" + id, requestOptions)
 }
-async function sendAddRequest(name: string, price: Number, emoji: string) {
+async function sendAddRequest(name: string, price: Number, emoji: string, hiddenText: string) {
   const requestOptions = {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -145,7 +164,8 @@ async function sendAddRequest(name: string, price: Number, emoji: string) {
       price: price,
       checked: false,
       emoji: emoji,
-      tags: []
+      tags: [],
+      hiddenText: hiddenText,
     })
   };
 
@@ -179,6 +199,11 @@ async function sendRequest(url: string, options: any) {
                        @confirmPressed="removeConfirmed"
     />
   </div>
+  <div class="popup-container" v-if="hiddenTextShown">
+    <InviteCodePopup :title="hiddenText"
+                     @confirmPressed="hideHiddenText"
+    />
+  </div>
   <div class="to-buy-screen">
     <div class="search-container">
       <input class="text-input" type="text" placeholder="Search" v-model="searchQuery">
@@ -189,6 +214,7 @@ async function sendRequest(url: string, options: any) {
                   @editClicked="editButtonClicked"
                   @deleteClicked="removeButtonClicked"
                   @checkStateChanged="checkStateChanged"
+                  @nameClicked="nameClicked"
       />
     </div>
     <button class="add-entry-button" @click="addButtonClicked">Create new</button>

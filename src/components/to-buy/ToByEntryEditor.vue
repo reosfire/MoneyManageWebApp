@@ -9,13 +9,14 @@ const props = defineProps(["data"])
 
 const emit = defineEmits<{
   (e: 'cancelClicked'): void
-  (e: 'confirmClicked', name: string, price: Number, emoji: string): void
+  (e: 'confirmClicked', name: string, price: Number, emoji: string, hiddenText: string): void
 }>()
 
 const name = ref(props.data.name)
 const price = ref(props.data.price.toString())
 const emoji = ref(props.data.emoji)
 const emojiPickerShown = ref(false)
+const hiddenText = ref(props.data.hiddenText)
 
 function toggleEmojiPicker() {
   emojiPickerShown.value = !emojiPickerShown.value
@@ -52,6 +53,10 @@ const priceError = computed(() => {
   if (parsed < 0) return "price must not be negative"
   return null
 })
+const hiddenTextError = computed(() => {
+  if (hiddenText.value.trim().length == 0) return "hidden text must not be empty"
+  return null
+})
 
 const nameInvalid = computed(() => {
   return nameError.value != null
@@ -59,9 +64,12 @@ const nameInvalid = computed(() => {
 const priceInvalid = computed(() => {
   return priceError.value != null
 })
+const hiddenTextInvalid = computed(() => {
+  return hiddenTextError.value != null
+})
 
 const cantSend = computed(() => {
-  return nameInvalid.value || priceInvalid.value
+  return nameInvalid.value || priceInvalid.value || hiddenTextInvalid.value
 })
 
 function onConfirmClicked() {
@@ -71,6 +79,7 @@ function onConfirmClicked() {
       name.value.trim(),
       parseFloat(price.value.replace(',', '.')),
       emoji.value,
+      hiddenText.value
   )
 }
 
@@ -107,6 +116,17 @@ async function sendRequest(url: string) {
                  v-model="name" type="text">
         </div>
         <span class="error-label" v-if="nameInvalid">{{ nameError }}</span>
+      </div>
+      <div class="input-block">
+        <div class="input-field-container">
+          <div class="input-field-label"
+               :class="{ 'invalid-input-field-label' : hiddenTextInvalid }"
+          >Hidden text:</div>
+          <input class="input-field"
+                 :class="{ 'invalid-input-field' : hiddenTextInvalid }"
+                 v-model="hiddenText" type="text">
+        </div>
+        <span class="error-label" v-if="hiddenTextInvalid">{{ hiddenTextError }}</span>
       </div>
       <div class="input-block">
         <div class="input-field-container">

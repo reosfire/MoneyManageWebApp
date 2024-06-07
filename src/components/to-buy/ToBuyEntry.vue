@@ -10,6 +10,7 @@ const emit = defineEmits<{
   (e: 'editClicked', id: string): void
   (e: 'deleteClicked', id: string): void
   (e: 'checkStateChanged', id: string, newValue: boolean): void
+  (e: 'nameClicked', id: string): void
 }>()
 
 function onEditClicked() {
@@ -24,6 +25,10 @@ function onCheckStateChanged(newValue: boolean) {
   emit('checkStateChanged', props.data.uuid, newValue)
 }
 
+function onNameClicked() {
+  emit('nameClicked', props.data.uuid)
+}
+
 </script>
 
 <template>
@@ -33,7 +38,7 @@ function onCheckStateChanged(newValue: boolean) {
       <div class="emoji">{{ data.emoji }}</div>
       <div class="main-info-container">
         <div class="name-and-price">
-          <span class="name">{{ data.name }}</span>
+          <span class="name" @click="onNameClicked">{{ data.name }}</span>
         </div>
         <div class="tagsList">
           <tag class="tag" v-for="tag in data.tags" :color="tag.color" :label="tag.label"/>
@@ -87,6 +92,7 @@ function onCheckStateChanged(newValue: boolean) {
 }
 .name {
   color: var(--text-primary);
+  cursor:pointer;
 }
 .price {
   color: var(--text-secondary);
